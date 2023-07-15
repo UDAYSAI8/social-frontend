@@ -2,6 +2,7 @@ import "./App.css"
 import HomePage from "./Pages/HomePage/HomePage";
 import { Route, Routes, Navigate } from "react-router-dom";
 import Login from "./Pages/LoginPage/LoginPage";
+import NewPost from "./Pages/NewPost/NewPost";
 
 function App() {
 
@@ -19,6 +20,10 @@ function App() {
       <Route path="*" Component={() => {
             Navigate({ to: "/login" });
       }}/>
+      <Route path="/new-post" Component={() => {
+            const token = localStorage.getItem("token");
+            return token ? <NewPost /> : Navigate({ to: "/login" });
+      } }/>
     </Routes>
     </div>
     )
