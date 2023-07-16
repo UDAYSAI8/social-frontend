@@ -2,33 +2,33 @@ import "./PostOfUser.css"
 import React,{useState,useEffect} from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
-import {Card, CardImg, CardBody,CardTitle, CardText, Button,CardHeader,CardFooter} from "reactstrap"
+import {Card, CardImg, CardBody,CardTitle,CardHeader,CardFooter} from "reactstrap"
 import axiosInstance from "../../axios";
   
 function PostOfUser(props) {
+    const [loading, setLoading] = useState(true);
     const [name, setName] = useState([]);
     const [arr1,setArr1] = useState(props.props.comments);
     const [like, setLike] = useState(0);
     const [isActive, setActive] = useState(null);
     const [comment, setComment] = useState("");
     useEffect(()=>{
-        axiosInstance().get("http://localhost:3000/users/"+props.props.user).then(res=>setName(res.data.data.name));
-        const url = "http://localhost:3000/posts/"+props.props._id+"/likes";
-        axiosInstance().get(url).then(res=>{
+        axiosInstance().get("http://localhost:3000/users/"+props.props.user).then(res=>{setName([res.data.data.name,res.data.data.username])
+        axiosInstance().get("http://localhost:3000/posts/"+props.props._id+"/likes").then(res=>{
             const arr = res.data.data.likes;
             setLike(arr.length);
-            if(arr.includes(res.data.data.user)){
+            if(arr.includes(props.props.cur_user)){
                 setActive(true);
             }
             else{
                 setActive(false);
             }
         });
+        setLoading(false);
+    });
+        
     },[]);
-    
-       
 
-    
 
     
     function likeButton(){
@@ -54,18 +54,21 @@ function PostOfUser(props) {
         setArr1([...arr1,comment]);
         setComment("");
         axiosInstance().patch(url,{comment: comment}).then(res=>{
-            console.log(res.data.data);
+            console.log("comment added");
             
         })
     }
-
+    if (loading) {
+        return <div className="App">Loading...</div>;
+      }
 
     return (
         <div style={{display: 'block', width: 700, padding: 30}}>
             <Card className=""style={{width: '100%'}}>
                 <CardHeader>
                     <div className="prof-container">
-                        <p className="prof_name">{name}</p>
+                        <p className="prof_name">{name[0]}</p>
+                        <p className="prof_uname">@{name[1]}</p>
                     </div>
                 </CardHeader>
                 <CardBody>
@@ -86,8 +89,8 @@ function PostOfUser(props) {
                     <p className="mb-0" style={{fontSize: "1.5rem"}}>Comments</p>
                     {arr1.map((item)=>{
                         return(
-                            <div className="d-flex flex-row mt-2">
-                            <p className="comments">{item}</p>
+                            <div id="comments">
+                                {item}
                             </div>
                     )})}
                 </CardFooter>

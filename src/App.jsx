@@ -3,6 +3,7 @@ import HomePage from "./Pages/HomePage/HomePage";
 import { Route, Routes, Navigate } from "react-router-dom";
 import Login from "./Pages/LoginPage/LoginPage";
 import NewPost from "./Pages/NewPost/NewPost";
+import Register from "./Pages/Register/Register";
 
 function App() {
 
@@ -24,6 +25,10 @@ function App() {
             const token = localStorage.getItem("token");
             return token ? <NewPost /> : Navigate({ to: "/login" });
       } }/>
+      <Route path="/register" Component={()=>{
+            const token = localStorage.getItem("token");
+            return token ? Navigate({ to: "/" }) : <Register />;
+      }} />
     </Routes>
     </div>
     )
